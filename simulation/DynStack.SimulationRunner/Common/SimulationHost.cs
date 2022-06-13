@@ -26,8 +26,8 @@ namespace DynStack.SimulationRunner.Common {
         _socket = new DealerSocket();
         _socket.Options.Linger = TimeSpan.FromSeconds(30);
         _socket.Options.Identity = Encoding.ASCII.GetBytes(Id);
-        if (options.Connect) _socket.Connect(options.URL);
-        else _socket.Bind(options.URL);
+        //if (options.Connect) _socket.Connect(options.URL);
+        //else _socket.Bind(options.URL);
 
         using (Outgoing = new NetMQQueue<NetMQMessage>()) {
           using var poller = new NetMQPoller() { _socket, Outgoing };
@@ -81,7 +81,7 @@ namespace DynStack.SimulationRunner.Common {
                 remaining = Outgoing.Count;
               }
             } else {
-              result = RunSimulation(await _settingsReceived.Task, options.SyncURL, options.Id);
+              result = RunSimulation(await _settingsReceived.Task, options.SyncURL, options.Id, options.SimulateAsync);
             }
           } finally {
             poller.Stop();

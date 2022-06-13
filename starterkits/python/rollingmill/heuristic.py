@@ -16,13 +16,13 @@ def buffer_stacks(world):
 
 
 def size_of(location):
-    return len(location.Stack.BottomToTop)
+    return len(location.RFStack.BottomToTop)
 
 def remaining_capacity(location):
     return location.MaxHeight - size_of(location)
 
 def position_of_block_in(loc, block_id):
-    for (pos, block) in enumerate(loc.Stack.BottomToTop):
+    for (pos, block) in enumerate(loc.RFStack.BottomToTop):
         if block.Id == block_id:
             return pos
     return None
@@ -39,12 +39,12 @@ def plan_handover_crane(world, plan):
     source_request.sort(key = lambda x: size_of(x[0])-x[1])
     
     for (src, pos, req) in source_request:
-        block = src.Stack.BottomToTop[pos]
+        block = src.RFStack.BottomToTop[pos]
         ty = block.Type
         seq = block.Sequence
         
         could_take_top_n = 0
-        for block in reversed(src.Stack.BottomToTop):
+        for block in reversed(src.RFStack.BottomToTop):
             if block.Type == ty and block.Sequence == seq:
                 could_take_top_n += 1
                 seq += 1
@@ -84,7 +84,7 @@ def plan_handover_crane(world, plan):
 def plan_shuffle_crane(world, plan):
     dont_use = [loc for mov in plan.Moves for loc in (mov.PickupLocationId, mov.DropoffLocationId) ]
     move_id = len(plan.Moves)
-    src = min(arrival_stacks(world), key = lambda loc: min(block.Sequence for block in loc.Stack.BottomToTop))
+    src = min(arrival_stacks(world), key = lambda loc: min(block.Sequence for block in loc.RFStack.BottomToTop))
 
     amount = min(size_of(src), world.ShuffleCrane.CraneCapacity)
     if amount == 0:

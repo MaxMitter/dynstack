@@ -29,6 +29,7 @@ namespace DynStacking {
       var socketAddr = args[0];
       var identity = new UTF8Encoding().GetBytes(args[1]);
       //IPlanner planner = args[2] == "HS" ? new HotStorage.Planner() : new RollingMill.Planner();
+      //IPlanner planner = args[2] == "HS" ? new csharp.HS_Self.Planner() : new RollingMill.Planner();
       IPlanner planner = args[2] == "HS" ? new csharp.HS_Sync.SyncHSPlanner() : new RollingMill.Planner();
 
       OptimizerType optType;
@@ -46,9 +47,7 @@ namespace DynStacking {
         Console.WriteLine("Connected");
 
         while (true) {
-          Console.WriteLine("Waiting for request...");
           var request = socket.ReceiveMultipartBytes();
-          Console.WriteLine("Incoming request");
           var answer = planner.PlanMoves(request[2], optType);
 
           var msg = new NetMQMessage();

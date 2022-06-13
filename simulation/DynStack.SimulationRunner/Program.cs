@@ -75,6 +75,7 @@ Any other input is treated as a filename.")]
 
     static async Task<int> Main(string[] args) {
       try {
+        //System.Diagnostics.Debugger.Launch();
         return await Parser.Default.ParseArguments<Options>(args).MapResult(o => Main(o), _ => Task.FromResult(0));
       } catch (Exception e) {
         Logger.WriteLine(e);
